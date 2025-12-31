@@ -460,7 +460,7 @@ Plugins/AFramework/BurstExtension/
 │   ├── AssemblyInfo.cs
 │   └── AFramework.Burst.asmdef
 │
-├── Editor/
+├── Editor/——————————————————————————————————————
 │   │
 │   ├── Inspectors/
 │   │   ├── BurstJobInspector.cs              # Job检查器
@@ -657,7 +657,7 @@ Plugins/AFramework/UnityExtension/
 │   │   │   ├── AudioClipExtensions.cs        # AudioClip扩展
 │   │   │   └── AudioMixerExtensions.cs       # AudioMixer扩展
 │   │   │
-│   │   ├── UI/
+│   │   ├── UI/_________________________________________________________________
 │   │   │   ├── CanvasExtensions.cs           # Canvas扩展
 │   │   │   ├── CanvasGroupExtensions.cs      # CanvasGroup扩展
 │   │   │   ├── GraphicExtensions.cs          # Graphic扩展
@@ -667,7 +667,7 @@ Plugins/AFramework/UnityExtension/
 │   │   │   ├── ScrollRectExtensions.cs       # ScrollRect扩展
 │   │   │   └── LayoutGroupExtensions.cs      # LayoutGroup扩展
 │   │   │
-│   │   ├── Rendering/
+│   │   ├── Rendering/___________________________________________________
 │   │   │   ├── MaterialExtensions.cs         # Material扩展
 │   │   │   ├── ShaderExtensions.cs           # Shader扩展
 │   │   │   ├── TextureExtensions.cs          # Texture扩展
@@ -687,7 +687,7 @@ Plugins/AFramework/UnityExtension/
 │   │       ├── AsyncOperationExtensions.cs   # AsyncOperation扩展
 │   │       └── WaitForExtensions.cs          # WaitFor扩展
 │   │
-│   ├── Utilities/
+│   ├── Utilities/_________________________________________________________________
 │   │   │
 │   │   ├── Math/
 │   │   │   ├── UnityMathUtility.cs           # Unity数学工具
@@ -756,7 +756,7 @@ Plugins/AFramework/UnityExtension/
 │   │       ├── WaitForUtility.cs             # 等待工具类
 │   │       └── CoroutineExtensions.cs        # 协程扩展
 │   │
-│   ├── Components/
+│   ├── Components/_______________________________
 │   │   │
 │   │   ├── Lifecycle/
 │   │   │   ├── SingletonBehaviour.cs         # 单例MonoBehaviour

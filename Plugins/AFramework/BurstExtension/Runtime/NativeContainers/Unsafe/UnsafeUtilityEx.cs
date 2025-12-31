@@ -88,10 +88,10 @@ namespace AFramework.Burst
         /// <summary>
         /// 获取类型的对齐要求
         /// </summary>
-        /// <typeparam name="T">类型</typeparam>
+        /// <typeparam name="T">非托管类型</typeparam>
         /// <returns>对齐要求（字节）</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetAlignment<T>()
+        public static int GetAlignment<T>() where T : unmanaged
         {
             return UnsafeUtility.AlignOf<T>();
         }
@@ -99,31 +99,23 @@ namespace AFramework.Burst
         /// <summary>
         /// 获取类型的大小
         /// </summary>
-        /// <typeparam name="T">类型</typeparam>
+        /// <typeparam name="T">非托管类型</typeparam>
         /// <returns>类型大小（字节）</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetSize<T>()
+        public static int GetSize<T>() where T : unmanaged
         {
             return UnsafeUtility.SizeOf<T>();
         }
 
         /// <summary>
-        /// 检查类型是否为非托管类型
+        /// 检查类型是否为非托管类型（编译时检查）
         /// </summary>
-        /// <typeparam name="T">类型</typeparam>
-        /// <returns>如果是非托管类型返回true</returns>
+        /// <typeparam name="T">非托管类型</typeparam>
+        /// <returns>始终返回true（因为约束已确保类型为unmanaged）</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsUnmanaged<T>()
+        public static bool IsUnmanaged<T>() where T : unmanaged
         {
-            try
-            {
-                UnsafeUtility.SizeOf<T>();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return true;
         }
 
         #endregion

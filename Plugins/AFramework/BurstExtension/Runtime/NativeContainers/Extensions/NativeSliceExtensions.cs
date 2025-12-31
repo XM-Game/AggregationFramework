@@ -164,12 +164,12 @@ namespace AFramework.Burst
         /// <summary>
         /// 转换为NativeList
         /// </summary>
-        /// <typeparam name="T">元素类型</typeparam>
+        /// <typeparam name="T">元素类型（必须是unmanaged类型）</typeparam>
         /// <param name="slice">切片</param>
         /// <param name="allocator">分配器</param>
         /// <returns>NativeList</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static NativeList<T> ToNativeList<T>(this NativeSlice<T> slice, Allocator allocator) where T : struct
+        public static NativeList<T> ToNativeList<T>(this NativeSlice<T> slice, Allocator allocator) where T : unmanaged
         {
             var list = new NativeList<T>(slice.Length, allocator);
             for (int i = 0; i < slice.Length; i++)
