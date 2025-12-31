@@ -5,61 +5,110 @@
 // ==========================================================
 
 using System;
-using System.Runtime.CompilerServices;
 
 namespace AFramework.CSharpExtension
 {
     /// <summary>
-    /// DateTime 扩展方法
-    /// <para>提供日期时间的常用操作扩展，包括格式化、计算、比较等功能</para>
+    /// DateTime 扩展方法集合
     /// </summary>
     public static class DateTimeExtensions
     {
-        #region 格式化操作
+        #region 时间戳转换
 
         /// <summary>
-        /// 转换为 ISO 8601 格式字符串
+        /// 转换为 Unix 时间戳（秒）
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string ToISO8601(this DateTime dateTime)
+        public static long ToUnixTimestamp(this DateTime dateTime)
         {
-            return dateTime.ToString(StringConstants.DateTimeFormats.ISO8601);
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return (long)(dateTime.ToUniversalTime() - epoch).TotalSeconds;
         }
 
         /// <summary>
-        /// 转换为短日期字符串 (yyyy-MM-dd)
+        /// 转换为 Unix 时间戳（毫秒）
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string ToShortDateString(this DateTime dateTime)
+        public static long ToUnixTimestampMilliseconds(this DateTime dateTime)
         {
-            return dateTime.ToString(StringConstants.DateTimeFormats.ShortDate);
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return (long)(dateTime.ToUniversalTime() - epoch).TotalMilliseconds;
         }
 
         /// <summary>
-        /// 转换为长日期字符串
+        /// 从 Unix 时间戳（秒）创建 DateTime
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string ToLongDateString(this DateTime dateTime)
+        public static DateTime FromUnixTimestamp(long timestamp)
         {
-            return dateTime.ToString(StringConstants.DateTimeFormats.LongDate);
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return epoch.AddSeconds(timestamp).ToLocalTime();
         }
 
         /// <summary>
-        /// 转换为文件名安全的字符串
+        /// 从 Unix 时间戳（毫秒）创建 DateTime
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string ToFileNameSafe(this DateTime dateTime)
+        public static DateTime FromUnixTimestampMilliseconds(long timestamp)
         {
-            return dateTime.ToString(StringConstants.DateTimeFormats.FileNameSafe);
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return epoch.AddMilliseconds(timestamp).ToLocalTime();
+        }
+
+        #endregion
+
+        #region 日期判断
+
+        /// <summary>
+        /// 判断是否为今天
+        /// </summary>
+        public static bool IsToday(this DateTime dateTime)
+        {
+            return dateTime.Date == DateTime.Today;
         }
 
         /// <summary>
-        /// 转换为日志时间戳格式
+        /// 判断是否为昨天
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string ToLogTimestamp(this DateTime dateTime)
+        public static bool IsYesterday(this DateTime dateTime)
         {
-            return dateTime.ToString(StringConstants.DateTimeFormats.LogTimestamp);
+            return dateTime.Date == DateTime.Today.AddDays(-1);
+        }
+
+        /// <summary>
+        /// 判断是否为明天
+        /// </summary>
+        public static bool IsTomorrow(this DateTime dateTime)
+        {
+            return dateTime.Date == DateTime.Today.AddDays(1);
+        }
+
+        /// <summary>
+        /// 判断是否为周末
+        /// </summary>
+        public static bool IsWeekend(this DateTime dateTime)
+        {
+            return dateTime.DayOfWeek == DayOfWeek.Saturday || dateTime.DayOfWeek == DayOfWeek.Sunday;
+        }
+
+        /// <summary>
+        /// 判断是否为工作日
+        /// </summary>
+        public static bool IsWeekday(this DateTime dateTime)
+        {
+            return !IsWeekend(dateTime);
+        }
+
+        /// <summary>
+        /// 判断是否在指定日期范围内
+        /// </summary>
+        public static bool IsBetween(this DateTime dateTime, DateTime start, DateTime end)
+        {
+            return dateTime >= start && dateTime <= end;
+        }
+
+        /// <summary>
+        /// 判断是否为闰年
+        /// </summary>
+        public static bool IsLeapYear(this DateTime dateTime)
+        {
+            return DateTime.IsLeapYear(dateTime.Year);
         }
 
         #endregion
@@ -67,25 +116,23 @@ namespace AFramework.CSharpExtension
         #region 日期计算
 
         /// <summary>
-        /// 获取当天的开始时间（00:00:00）
+        /// 获取月初日期
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DateTime StartOfDay(this DateTime dateTime)
+        public static DateTime StartOfMonth(this DateTime dateTime)
         {
-            return dateTime.Date;
+            return new DateTime(dateTime.Year, dateTime.Month, 1, 0, 0, 0, dateTime.Kind);
         }
 
         /// <summary>
-        /// 获取当天的结束时间（23:59:59.999）
+        /// 获取月末日期
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DateTime EndOfDay(this DateTime dateTime)
+        public static DateTime EndOfMonth(this DateTime dateTime)
         {
-            return dateTime.Date.AddDays(1).AddMilliseconds(-1);
+            return StartOfMonth(dateTime).AddMonths(1).AddDays(-1).EndOfDay();
         }
 
         /// <summary>
-        /// 获取本周的开始时间（周一 00:00:00）
+        /// 获取周初日期（周一）
         /// </summary>
         public static DateTime StartOfWeek(this DateTime dateTime, DayOfWeek startOfWeek = DayOfWeek.Monday)
         {
@@ -94,287 +141,148 @@ namespace AFramework.CSharpExtension
         }
 
         /// <summary>
-        /// 获取本周的结束时间（周日 23:59:59.999）
+        /// 获取周末日期（周日）
         /// </summary>
         public static DateTime EndOfWeek(this DateTime dateTime, DayOfWeek startOfWeek = DayOfWeek.Monday)
         {
-            return dateTime.StartOfWeek(startOfWeek).AddDays(7).AddMilliseconds(-1);
+            return StartOfWeek(dateTime, startOfWeek).AddDays(6).EndOfDay();
         }
 
         /// <summary>
-        /// 获取本月的开始时间（1号 00:00:00）
+        /// 获取年初日期
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DateTime StartOfMonth(this DateTime dateTime)
-        {
-            return new DateTime(dateTime.Year, dateTime.Month, 1);
-        }
-
-        /// <summary>
-        /// 获取本月的结束时间（最后一天 23:59:59.999）
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DateTime EndOfMonth(this DateTime dateTime)
-        {
-            return dateTime.StartOfMonth().AddMonths(1).AddMilliseconds(-1);
-        }
-
-        /// <summary>
-        /// 获取本年的开始时间（1月1日 00:00:00）
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime StartOfYear(this DateTime dateTime)
         {
-            return new DateTime(dateTime.Year, 1, 1);
+            return new DateTime(dateTime.Year, 1, 1, 0, 0, 0, dateTime.Kind);
         }
 
         /// <summary>
-        /// 获取本年的结束时间（12月31日 23:59:59.999）
+        /// 获取年末日期
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime EndOfYear(this DateTime dateTime)
         {
-            return new DateTime(dateTime.Year, 12, 31, 23, 59, 59, 999);
+            return new DateTime(dateTime.Year, 12, 31, 23, 59, 59, 999, dateTime.Kind);
+        }
+
+        /// <summary>
+        /// 获取当天开始时间（00:00:00）
+        /// </summary>
+        public static DateTime StartOfDay(this DateTime dateTime)
+        {
+            return dateTime.Date;
+        }
+
+        /// <summary>
+        /// 获取当天结束时间（23:59:59）
+        /// </summary>
+        public static DateTime EndOfDay(this DateTime dateTime)
+        {
+            return dateTime.Date.AddDays(1).AddTicks(-1);
+        }
+
+        /// <summary>
+        /// 获取下一个指定星期几的日期
+        /// </summary>
+        public static DateTime NextDayOfWeek(this DateTime dateTime, DayOfWeek dayOfWeek)
+        {
+            int daysToAdd = ((int)dayOfWeek - (int)dateTime.DayOfWeek + 7) % 7;
+            if (daysToAdd == 0)
+                daysToAdd = 7;
+
+            return dateTime.AddDays(daysToAdd);
+        }
+
+        /// <summary>
+        /// 获取上一个指定星期几的日期
+        /// </summary>
+        public static DateTime PreviousDayOfWeek(this DateTime dateTime, DayOfWeek dayOfWeek)
+        {
+            int daysToSubtract = ((int)dateTime.DayOfWeek - (int)dayOfWeek + 7) % 7;
+            if (daysToSubtract == 0)
+                daysToSubtract = 7;
+
+            return dateTime.AddDays(-daysToSubtract);
         }
 
         #endregion
 
-        #region 日期判断
+        #region 年龄计算
 
         /// <summary>
-        /// 检查是否为今天
+        /// 计算年龄
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsToday(this DateTime dateTime)
+        public static int CalculateAge(this DateTime birthDate)
         {
-            return dateTime.Date == DateTime.Today;
+            return CalculateAge(birthDate, DateTime.Today);
         }
 
         /// <summary>
-        /// 检查是否为昨天
+        /// 计算指定日期时的年龄
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsYesterday(this DateTime dateTime)
+        public static int CalculateAge(this DateTime birthDate, DateTime referenceDate)
         {
-            return dateTime.Date == DateTime.Today.AddDays(-1);
-        }
+            int age = referenceDate.Year - birthDate.Year;
 
-        /// <summary>
-        /// 检查是否为明天
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsTomorrow(this DateTime dateTime)
-        {
-            return dateTime.Date == DateTime.Today.AddDays(1);
-        }
-
-        /// <summary>
-        /// 检查是否为本周
-        /// </summary>
-        public static bool IsThisWeek(this DateTime dateTime)
-        {
-            var now = DateTime.Now;
-            return dateTime >= now.StartOfWeek() && dateTime <= now.EndOfWeek();
-        }
-
-        /// <summary>
-        /// 检查是否为本月
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsThisMonth(this DateTime dateTime)
-        {
-            var now = DateTime.Now;
-            return dateTime.Year == now.Year && dateTime.Month == now.Month;
-        }
-
-        /// <summary>
-        /// 检查是否为本年
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsThisYear(this DateTime dateTime)
-        {
-            return dateTime.Year == DateTime.Now.Year;
-        }
-
-        /// <summary>
-        /// 检查是否为周末
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsWeekend(this DateTime dateTime)
-        {
-            return dateTime.DayOfWeek == DayOfWeek.Saturday || dateTime.DayOfWeek == DayOfWeek.Sunday;
-        }
-
-        /// <summary>
-        /// 检查是否为工作日
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsWeekday(this DateTime dateTime)
-        {
-            return !dateTime.IsWeekend();
-        }
-
-        /// <summary>
-        /// 检查是否为过去的时间
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsPast(this DateTime dateTime)
-        {
-            return dateTime < DateTime.Now;
-        }
-
-        /// <summary>
-        /// 检查是否为未来的时间
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsFuture(this DateTime dateTime)
-        {
-            return dateTime > DateTime.Now;
-        }
-
-        #endregion
-
-        #region 时间差计算
-
-        /// <summary>
-        /// 计算与当前时间的时间差
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TimeSpan TimeFromNow(this DateTime dateTime)
-        {
-            return dateTime - DateTime.Now;
-        }
-
-        /// <summary>
-        /// 计算距离当前时间的时间差
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TimeSpan TimeUntilNow(this DateTime dateTime)
-        {
-            return DateTime.Now - dateTime;
-        }
-
-        /// <summary>
-        /// 获取年龄（按年计算）
-        /// </summary>
-        public static int GetAge(this DateTime birthDate)
-        {
-            var today = DateTime.Today;
-            int age = today.Year - birthDate.Year;
-            if (birthDate.Date > today.AddYears(-age))
+            if (referenceDate.Month < birthDate.Month ||
+                (referenceDate.Month == birthDate.Month && referenceDate.Day < birthDate.Day))
+            {
                 age--;
+            }
+
             return age;
         }
 
-        /// <summary>
-        /// 计算两个日期之间的天数
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int DaysBetween(this DateTime from, DateTime to)
-        {
-            return (to.Date - from.Date).Days;
-        }
-
-        /// <summary>
-        /// 计算两个日期之间的月数
-        /// </summary>
-        public static int MonthsBetween(this DateTime from, DateTime to)
-        {
-            return ((to.Year - from.Year) * 12) + to.Month - from.Month;
-        }
-
-        /// <summary>
-        /// 计算两个日期之间的年数
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int YearsBetween(this DateTime from, DateTime to)
-        {
-            return to.Year - from.Year;
-        }
-
         #endregion
 
-        #region 友好时间显示
+        #region 格式化
 
         /// <summary>
-        /// 转换为友好的时间描述（如"刚刚"、"5分钟前"等）
+        /// 转换为友好的时间描述（如：刚刚、5分钟前、昨天等）
         /// </summary>
         public static string ToFriendlyString(this DateTime dateTime)
         {
-            var timeSpan = DateTime.Now - dateTime;
+            TimeSpan span = DateTime.Now - dateTime;
 
-            if (timeSpan.TotalSeconds < 60)
+            if (span.TotalSeconds < 60)
                 return "刚刚";
 
-            if (timeSpan.TotalMinutes < 60)
-                return $"{(int)timeSpan.TotalMinutes} 分钟前";
+            if (span.TotalMinutes < 60)
+                return $"{(int)span.TotalMinutes}分钟前";
 
-            if (timeSpan.TotalHours < 24)
-                return $"{(int)timeSpan.TotalHours} 小时前";
+            if (span.TotalHours < 24)
+                return $"{(int)span.TotalHours}小时前";
 
-            if (timeSpan.TotalDays < 7)
-                return $"{(int)timeSpan.TotalDays} 天前";
+            if (span.TotalDays < 2)
+                return "昨天";
 
-            if (timeSpan.TotalDays < 30)
-                return $"{(int)(timeSpan.TotalDays / 7)} 周前";
+            if (span.TotalDays < 7)
+                return $"{(int)span.TotalDays}天前";
 
-            if (timeSpan.TotalDays < 365)
-                return $"{(int)(timeSpan.TotalDays / 30)} 个月前";
+            if (span.TotalDays < 30)
+                return $"{(int)(span.TotalDays / 7)}周前";
 
-            return $"{(int)(timeSpan.TotalDays / 365)} 年前";
+            if (span.TotalDays < 365)
+                return $"{(int)(span.TotalDays / 30)}个月前";
+
+            return $"{(int)(span.TotalDays / 365)}年前";
+        }
+
+        /// <summary>
+        /// 转换为 ISO 8601 格式字符串
+        /// </summary>
+        public static string ToIso8601String(this DateTime dateTime)
+        {
+            return dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
         }
 
         #endregion
 
-        #region Unix 时间戳
-
-        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
-        /// <summary>
-        /// 转换为 Unix 时间戳（秒）
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long ToUnixTimestamp(this DateTime dateTime)
-        {
-            return (long)(dateTime.ToUniversalTime() - UnixEpoch).TotalSeconds;
-        }
-
-        /// <summary>
-        /// 转换为 Unix 时间戳（毫秒）
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long ToUnixTimestampMilliseconds(this DateTime dateTime)
-        {
-            return (long)(dateTime.ToUniversalTime() - UnixEpoch).TotalMilliseconds;
-        }
-
-        /// <summary>
-        /// 从 Unix 时间戳（秒）转换为 DateTime
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DateTime FromUnixTimestamp(long timestamp)
-        {
-            return UnixEpoch.AddSeconds(timestamp).ToLocalTime();
-        }
-
-        /// <summary>
-        /// 从 Unix 时间戳（毫秒）转换为 DateTime
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DateTime FromUnixTimestampMilliseconds(long timestamp)
-        {
-            return UnixEpoch.AddMilliseconds(timestamp).ToLocalTime();
-        }
-
-        #endregion
-
-        #region 日期修改
+        #region 时间设置
 
         /// <summary>
         /// 设置时间部分
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DateTime SetTime(this DateTime dateTime, int hour, int minute, int second = 0, int millisecond = 0)
+        public static DateTime SetTime(this DateTime dateTime, int hour, int minute = 0, int second = 0, int millisecond = 0)
         {
             return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, hour, minute, second, millisecond, dateTime.Kind);
         }
@@ -382,42 +290,9 @@ namespace AFramework.CSharpExtension
         /// <summary>
         /// 设置日期部分
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime SetDate(this DateTime dateTime, int year, int month, int day)
         {
             return new DateTime(year, month, day, dateTime.Hour, dateTime.Minute, dateTime.Second, dateTime.Millisecond, dateTime.Kind);
-        }
-
-        /// <summary>
-        /// 添加工作日
-        /// </summary>
-        public static DateTime AddWorkdays(this DateTime dateTime, int workdays)
-        {
-            int direction = workdays < 0 ? -1 : 1;
-            int daysToAdd = Math.Abs(workdays);
-            var result = dateTime;
-
-            while (daysToAdd > 0)
-            {
-                result = result.AddDays(direction);
-                if (result.IsWeekday())
-                    daysToAdd--;
-            }
-
-            return result;
-        }
-
-        #endregion
-
-        #region 范围检查
-
-        /// <summary>
-        /// 检查日期是否在指定范围内
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsBetween(this DateTime dateTime, DateTime start, DateTime end)
-        {
-            return dateTime >= start && dateTime <= end;
         }
 
         #endregion

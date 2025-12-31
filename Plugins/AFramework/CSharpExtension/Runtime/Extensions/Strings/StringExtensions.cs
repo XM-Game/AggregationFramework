@@ -20,32 +20,8 @@ namespace AFramework.CSharpExtension
     {
         #region 空值检查
 
-        /// <summary>
-        /// 检查字符串是否为 null 或空
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNullOrEmpty(this string str)
-        {
-            return string.IsNullOrEmpty(str);
-        }
-
-        /// <summary>
-        /// 检查字符串是否为 null、空或仅包含空白字符
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNullOrWhiteSpace(this string str)
-        {
-            return string.IsNullOrWhiteSpace(str);
-        }
-
-        /// <summary>
-        /// 检查字符串是否有内容（非 null 且非空）
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool HasValue(this string str)
-        {
-            return !string.IsNullOrEmpty(str);
-        }
+        // 注意：IsNullOrEmpty 和 IsNullOrWhiteSpace 方法定义在 StringValidationExtensions.cs 中
+        // 此处不重复定义，避免二义性
 
         /// <summary>
         /// 检查字符串是否有有效内容（非 null、非空且非空白）
@@ -62,7 +38,7 @@ namespace AFramework.CSharpExtension
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string OrDefault(this string str, string defaultValue = "")
         {
-            return str.IsNullOrEmpty() ? defaultValue : str;
+            return string.IsNullOrEmpty(str) ? defaultValue : str;
         }
 
         /// <summary>
@@ -71,7 +47,7 @@ namespace AFramework.CSharpExtension
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string OrDefaultIfWhiteSpace(this string str, string defaultValue = "")
         {
-            return str.IsNullOrWhiteSpace() ? defaultValue : str;
+            return string.IsNullOrWhiteSpace(str) ? defaultValue : str;
         }
 
         #endregion
@@ -129,7 +105,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string SafeSubstring(this string str, int startIndex, int length)
         {
-            if (str.IsNullOrEmpty() || startIndex < 0)
+            if (string.IsNullOrEmpty(str) || startIndex < 0)
                 return string.Empty;
 
             if (startIndex >= str.Length)
@@ -144,7 +120,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string SafeSubstring(this string str, int startIndex)
         {
-            if (str.IsNullOrEmpty() || startIndex < 0)
+            if (string.IsNullOrEmpty(str) || startIndex < 0)
                 return string.Empty;
 
             if (startIndex >= str.Length)
@@ -167,7 +143,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string Right(this string str, int length)
         {
-            if (str.IsNullOrEmpty() || length <= 0)
+            if (string.IsNullOrEmpty(str) || length <= 0)
                 return string.Empty;
 
             if (length >= str.Length)
@@ -181,7 +157,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string Truncate(this string str, int maxLength, string ellipsis = "...")
         {
-            if (str.IsNullOrEmpty() || str.Length <= maxLength)
+            if (string.IsNullOrEmpty(str) || str.Length <= maxLength)
                 return str;
 
             int truncateLength = Math.Max(0, maxLength - ellipsis.Length);
@@ -197,7 +173,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string RemovePrefix(this string str, string prefix)
         {
-            if (str.IsNullOrEmpty() || prefix.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str) || string.IsNullOrEmpty(prefix))
                 return str;
 
             return str.StartsWith(prefix) ? str.Substring(prefix.Length) : str;
@@ -208,7 +184,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string RemoveSuffix(this string str, string suffix)
         {
-            if (str.IsNullOrEmpty() || suffix.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str) || string.IsNullOrEmpty(suffix))
                 return str;
 
             return str.EndsWith(suffix) ? str.Substring(0, str.Length - suffix.Length) : str;
@@ -219,7 +195,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string RemoveWhiteSpace(this string str)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return str;
 
             return Regex.Replace(str, @"\s+", string.Empty);
@@ -230,7 +206,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string Remove(this string str, params char[] chars)
         {
-            if (str.IsNullOrEmpty() || chars == null || chars.Length == 0)
+            if (string.IsNullOrEmpty(str) || chars == null || chars.Length == 0)
                 return str;
 
             var sb = new StringBuilder(str.Length);
@@ -251,7 +227,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string ReplaceIgnoreCase(this string str, string oldValue, string newValue)
         {
-            if (str.IsNullOrEmpty() || oldValue.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str) || string.IsNullOrEmpty(oldValue))
                 return str;
 
             return Regex.Replace(str, Regex.Escape(oldValue), newValue ?? string.Empty, RegexOptions.IgnoreCase);
@@ -262,12 +238,12 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string ReplaceMultiple(this string str, string[] oldValues, string newValue)
         {
-            if (str.IsNullOrEmpty() || oldValues == null || oldValues.Length == 0)
+            if (string.IsNullOrEmpty(str) || oldValues == null || oldValues.Length == 0)
                 return str;
 
             foreach (var oldValue in oldValues)
             {
-                if (!oldValue.IsNullOrEmpty())
+                if (!string.IsNullOrEmpty(oldValue))
                     str = str.Replace(oldValue, newValue ?? string.Empty);
             }
             return str;
@@ -291,7 +267,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string ToTitleCase(this string str)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return str;
 
             return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(str.ToLower());
@@ -302,7 +278,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string ToCamelCase(this string str)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return str;
 
             if (str.Length == 1)
@@ -316,7 +292,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string ToPascalCase(this string str)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return str;
 
             if (str.Length == 1)
@@ -330,7 +306,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string ToSnakeCase(this string str)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return str;
 
             return Regex.Replace(str, @"([a-z0-9])([A-Z])", "$1_$2").ToLower();
@@ -341,7 +317,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string ToKebabCase(this string str)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return str;
 
             return Regex.Replace(str, @"([a-z0-9])([A-Z])", "$1-$2").ToLower();
@@ -356,7 +332,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string Reverse(this string str)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return str;
 
             char[] chars = str.ToCharArray();
@@ -369,7 +345,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string Repeat(this string str, int count)
         {
-            if (str.IsNullOrEmpty() || count <= 0)
+            if (string.IsNullOrEmpty(str) || count <= 0)
                 return string.Empty;
 
             if (count == 1)
@@ -392,7 +368,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string[] SplitAndRemoveEmpty(this string str, params char[] separators)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return Array.Empty<string>();
 
             return str.Split(separators, StringSplitOptions.RemoveEmptyEntries);
@@ -403,7 +379,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string[] SplitAndTrim(this string str, params char[] separators)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return Array.Empty<string>();
 
             var parts = str.Split(separators, StringSplitOptions.RemoveEmptyEntries);
@@ -419,7 +395,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string[] SplitLines(this string str)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return Array.Empty<string>();
 
             return str.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
@@ -429,6 +405,9 @@ namespace AFramework.CSharpExtension
 
         #region 类型转换
 
+        // 注意：ToInt、ToFloat、ToBool、ToEnum 等方法定义在 StringConversionExtensions.cs 中
+        // 此处只保留 Try* 系列方法，避免二义性
+
         /// <summary>
         /// 尝试转换为 int
         /// </summary>
@@ -436,15 +415,6 @@ namespace AFramework.CSharpExtension
         public static bool TryToInt(this string str, out int result)
         {
             return int.TryParse(str, out result);
-        }
-
-        /// <summary>
-        /// 转换为 int，失败返回默认值
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int ToInt(this string str, int defaultValue = 0)
-        {
-            return int.TryParse(str, out var result) ? result : defaultValue;
         }
 
         /// <summary>
@@ -457,38 +427,12 @@ namespace AFramework.CSharpExtension
         }
 
         /// <summary>
-        /// 转换为 float，失败返回默认值
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float ToFloat(this string str, float defaultValue = 0f)
-        {
-            return float.TryParse(str, out var result) ? result : defaultValue;
-        }
-
-        /// <summary>
         /// 尝试转换为 bool
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryToBool(this string str, out bool result)
         {
             return bool.TryParse(str, out result);
-        }
-
-        /// <summary>
-        /// 转换为 bool，失败返回默认值
-        /// </summary>
-        public static bool ToBool(this string str, bool defaultValue = false)
-        {
-            if (str.IsNullOrWhiteSpace())
-                return defaultValue;
-
-            str = str.Trim().ToLower();
-            if (str == "1" || str == "true" || str == "yes" || str == "on")
-                return true;
-            if (str == "0" || str == "false" || str == "no" || str == "off")
-                return false;
-
-            return defaultValue;
         }
 
         /// <summary>
@@ -499,35 +443,12 @@ namespace AFramework.CSharpExtension
             return Enum.TryParse(str, true, out result);
         }
 
-        /// <summary>
-        /// 转换为枚举，失败返回默认值
-        /// </summary>
-        public static TEnum ToEnum<TEnum>(this string str, TEnum defaultValue = default) where TEnum : struct
-        {
-            return Enum.TryParse(str, true, out TEnum result) ? result : defaultValue;
-        }
-
         #endregion
 
         #region 编码操作
 
-        /// <summary>
-        /// 转换为字节数组（UTF-8）
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] ToBytes(this string str)
-        {
-            return str.IsNullOrEmpty() ? Array.Empty<byte>() : Encoding.UTF8.GetBytes(str);
-        }
-
-        /// <summary>
-        /// 转换为字节数组（指定编码）
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] ToBytes(this string str, Encoding encoding)
-        {
-            return str.IsNullOrEmpty() ? Array.Empty<byte>() : encoding.GetBytes(str);
-        }
+        // 注意：ToBytes 方法定义在 StringConversionExtensions.cs 中
+        // 此处不重复定义，避免二义性
 
         /// <summary>
         /// 转换为 Base64 字符串
@@ -535,15 +456,15 @@ namespace AFramework.CSharpExtension
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string ToBase64(this string str)
         {
-            return str.IsNullOrEmpty() ? string.Empty : Convert.ToBase64String(str.ToBytes());
+            return string.IsNullOrEmpty(str) ? string.Empty : Convert.ToBase64String(Encoding.UTF8.GetBytes(str));
         }
 
         /// <summary>
         /// 从 Base64 字符串解码
         /// </summary>
-        public static string FromBase64(this string str)
+        public static string FromBase64String(this string str)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return string.Empty;
 
             try
@@ -562,11 +483,11 @@ namespace AFramework.CSharpExtension
         #region 验证操作
 
         /// <summary>
-        /// 检查是否为数字
+        /// 检查是否为有效的数值（包括整数和小数）
         /// </summary>
-        public static bool IsNumeric(this string str)
+        public static bool IsDecimalNumber(this string str)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return false;
 
             return double.TryParse(str, out _);
@@ -577,7 +498,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static bool IsInteger(this string str)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return false;
 
             return int.TryParse(str, out _);
@@ -586,9 +507,9 @@ namespace AFramework.CSharpExtension
         /// <summary>
         /// 检查是否为有效的电子邮件地址
         /// </summary>
-        public static bool IsValidEmail(this string str)
+        public static bool IsEmail(this string str)
         {
-            if (str.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(str))
                 return false;
 
             try
@@ -605,9 +526,9 @@ namespace AFramework.CSharpExtension
         /// <summary>
         /// 检查是否为有效的 URL
         /// </summary>
-        public static bool IsValidUrl(this string str)
+        public static bool IsUrl(this string str)
         {
-            if (str.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(str))
                 return false;
 
             return Uri.TryCreate(str, UriKind.Absolute, out var uriResult)
@@ -617,9 +538,9 @@ namespace AFramework.CSharpExtension
         /// <summary>
         /// 检查是否只包含字母
         /// </summary>
-        public static bool IsAlpha(this string str)
+        public static bool IsLettersOnly(this string str)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return false;
 
             foreach (char c in str)
@@ -633,9 +554,9 @@ namespace AFramework.CSharpExtension
         /// <summary>
         /// 检查是否只包含字母和数字
         /// </summary>
-        public static bool IsAlphaNumeric(this string str)
+        public static bool IsLettersOrDigitsOnly(this string str)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return false;
 
             foreach (char c in str)
@@ -655,12 +576,12 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string ToMD5(this string str)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return string.Empty;
 
             using (var md5 = System.Security.Cryptography.MD5.Create())
             {
-                byte[] bytes = md5.ComputeHash(str.ToBytes());
+                byte[] bytes = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
                 var sb = new StringBuilder();
                 foreach (byte b in bytes)
                 {
@@ -675,12 +596,12 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static string ToSHA256(this string str)
         {
-            if (str.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str))
                 return string.Empty;
 
             using (var sha256 = System.Security.Cryptography.SHA256.Create())
             {
-                byte[] bytes = sha256.ComputeHash(str.ToBytes());
+                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(str));
                 var sb = new StringBuilder();
                 foreach (byte b in bytes)
                 {
@@ -699,7 +620,7 @@ namespace AFramework.CSharpExtension
         /// </summary>
         public static int CountOccurrences(this string str, string substring)
         {
-            if (str.IsNullOrEmpty() || substring.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(str) || string.IsNullOrEmpty(substring))
                 return 0;
 
             int count = 0;
@@ -718,7 +639,7 @@ namespace AFramework.CSharpExtension
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetByteCount(this string str)
         {
-            return str.IsNullOrEmpty() ? 0 : Encoding.UTF8.GetByteCount(str);
+            return string.IsNullOrEmpty(str) ? 0 : Encoding.UTF8.GetByteCount(str);
         }
 
         #endregion
