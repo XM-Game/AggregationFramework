@@ -1,0 +1,32 @@
+{
+    "name": "AFramework.UnityExtension",
+    "rootNamespace": "AFramework.UnityExtension",
+    "references": [
+        "AFramework.CSharpExtension"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.burst",
+            "expression": "1.8.0",
+            "define": "AFRAMEWORK_BURST_ENABLED"
+        },
+        {
+            "name": "Unity",
+            "expression": "2023.1.0",
+            "define": "UNITY_2023_1_OR_NEWER"
+        },
+        {
+            "name": "Unity",
+            "expression": "6000.0.0",
+            "define": "UNITY_6_OR_NEWER"
+        }
+    ],
+    "noEngineReferences": false
+}
