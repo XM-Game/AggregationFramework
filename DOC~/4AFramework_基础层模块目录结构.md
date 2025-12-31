@@ -158,7 +158,7 @@ Plugins/AFramework/CSharpExtension/
 │   │       ├── FieldInfoExtensions.cs        # FieldInfo扩展方法
 │   │       └── AssemblyExtensions.cs         # Assembly扩展方法
 │   │
-│   ├── Utilities/
+│   ├── Utilities/——————————————————————————————————————————————————————
 │   │   │
 │   │   ├── Math/
 │   │   │   ├── MathUtility.cs                # 数学工具类
@@ -168,7 +168,7 @@ Plugins/AFramework/CSharpExtension/
 │   │   │   ├── MathUtility.Rounding.cs       # 舍入计算 (partial)
 │   │   │   └── BitUtility.cs                 # 位运算工具类
 │   │   │
-│   │   ├── String/
+│   │   ├── String/————————————————————————————————————————————————————————————————————>
 │   │   │   ├── StringUtility.cs              # 字符串工具类
 │   │   │   ├── StringBuilderPool.cs          # StringBuilder对象池
 │   │   │   ├── StringHashUtility.cs          # 字符串哈希工具
@@ -203,7 +203,7 @@ Plugins/AFramework/CSharpExtension/
 │   │   │   ├── HashUtility.cs                # 哈希工具类
 │   │   │   ├── XxHash.cs                     # xxHash实现
 │   │   │   ├── Fnv1aHash.cs                  # FNV-1a哈希实现
-│   │   │   └── CombineHash.cs                # 哈希组合工具
+│   │   │   └── CombineHash.cs                # 哈希组合工具__________________________________________^
 │   │   │
 │   │   ├── Validation/
 │   │   │   ├── Guard.cs                      # 参数守卫类
@@ -217,7 +217,7 @@ Plugins/AFramework/CSharpExtension/
 │   │       ├── Pipe.cs                       # 管道操作
 │   │       └── Curry.cs                      # 柯里化工具
 │   │
-│   ├── Interfaces/
+│   ├── Interfaces/_______________________________________________________________>
 │   │   ├── IPoolable.cs                      # 可池化接口
 │   │   ├── IResettable.cs                    # 可重置接口
 │   │   ├── IDeepCloneable.cs                 # 深拷贝接口
