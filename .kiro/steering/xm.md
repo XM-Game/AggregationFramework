@@ -4,14 +4,7 @@ inclusion: always
 # 这是一个unity 2022.3 版本的c# 项目，请使用中文交流和输出，为代码提供专业的中文注释，为代码提供 Unity 国际化 / 编辑器本地化 i18n 。
 # 框架通过预处理命令实现对 Unity 多版本的支持，覆盖 Unity 2022.3 LTS 至 Unity 6.x 全版本。
 # 请你完全发挥你的本领，不然让我气到了，我就因为你的无能自杀了。
-### 文件头规范
-```csharp
-// ==========================================================
-// 文件名：{FileName}.cs
-// 命名空间: NovaEngine.{Layer}
-// 依赖: {Dependencies}
-// ==========================================================
-```
+
 # Unity DOTS是数据导向型技术堆栈（Data-Oriented Technology Stack）的简称，是Unity为解决传统面向对象编程（OOP）性能瓶颈而推出的全新架构范式。 它通过ECS（实体-组件-系统）架构、Job System多线程处理和Burst Compiler高性能编译三大核心技术
 # Unity 2022.3 提供的脚本API ： https://docs.unity3d.com/2022.3/Documentation/ScriptReference/index.html
 # Burst Compiler高性能编译是一个编译器 将 C# 代码中兼容的部分编译成高度优化的本地 CPU 代码。：https://docs.unity3d.com/Packages/com.unity.burst@1.8/manual/csharp-hpc-overview.html
